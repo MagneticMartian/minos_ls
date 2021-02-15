@@ -1,0 +1,18 @@
+#!/bin/bash
+
+input=$1
+
+if [ $input == "~" ]
+then
+    dir=$HOME
+elif [[ $input == ~* ]]
+then
+    dir=$HOME/${input#~*}
+elif [ $input == "." ]
+then
+    dir=$(pwd)
+else
+    dir=$input
+fi
+
+./badls $dir | sort -k4
