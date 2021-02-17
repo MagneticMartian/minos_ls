@@ -111,11 +111,14 @@ void list(DIR *dp, char* pwd)
 			char* grp = result(grp_perm);
 			unsigned usr_perm = perms & 07;
 			char* usr = result(usr_perm);
-                        if(type == 'l')
-				// USE: readlink to find the location of the symlink. ## For info: man 2 readlink
+                        if(ch == 'l'){
+				char buf[1024];
+				ssize_t len = readlink(path, buf, sizeof(buf));
+				buf[len]='\0';
+				printf("%ld %c%s%s%s %10ld %s -> %s\n", inode, ch, own, grp, usr, (long)sb.st_size, name, buf);
+			} else {
 				printf("%ld %c%s%s%s %10ld %s\n", inode, ch, own, grp, usr, (long)sb.st_size, name);
-			else
-				printf("%ld %c%s%s%s %10ld %s\n", inode, ch, own, grp, usr, (long)sb.st_size, name);
+			}
 		}
 	}
 }
