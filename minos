@@ -15,4 +15,4 @@ else
     dir=$input
 fi
 
-./badls $dir | sort -k4
+./badls $dir | sort -k6
