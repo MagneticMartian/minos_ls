@@ -1,7 +1,11 @@
 #include "include/apue.h"
 #include <dirent.h>
+#include <grp.h>
+#include <pwd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <string.h>
+#include <stdint.h>
 #include <unistd.h>
 
 enum {
@@ -42,9 +46,9 @@ char* result(unsigned val)
 
 char* concat(const char *first, const char *second)
 {
-	char *concatination = malloc(strlen(first) + strlen(second) + 1);
-	strcpy(concatination, first);
-	strcat(concatination, second);
+    char *concatination = malloc(strlen(first) + strlen(second) + 1);
+    strcpy(concatination, first);
+    strcat(concatination, second);
 	return concatination;
 }
 
@@ -52,6 +56,8 @@ void list(DIR *dp, char* pwd)
 {
 	struct dirent *dirp;
 	struct stat sb;
+    struct passwd *gpwd;
+    struct group *grgid;
 	unsigned num_dir = 0, num_reg = 0;
 
 	while((dirp = readdir(dp)) != NULL){
@@ -100,13 +106,19 @@ void list(DIR *dp, char* pwd)
 			char* grp = result(grp_perm);
 			unsigned usr_perm = perms & 07;
 			char* usr = result(usr_perm);
-                        if(ch == 'l'){
+            
+            gpwd = getpwuid(sb.st_uid);
+            grgid = getgrgid(sb.st_gid);
+            
+            if(ch == 'l'){
 				char buf[1024];
 				ssize_t len = readlink(path, buf, sizeof(buf));
 				buf[len]='\0';
-				printf("%ld %c%s%s%s %10ld %s -> %s\n", inode, ch, own, grp, usr, (long)sb.st_size, name, buf);
+				printf("%ld %c%s%s%s %s %s %10ld %s -> %s\n", inode, ch, own, grp, usr, 
+                            gpwd->pw_name, grgid->gr_name, (long)sb.st_size, name, buf);
 			} else {
-				printf("%ld %c%s%s%s %10ld %s\n", inode, ch, own, grp, usr, (long)sb.st_size, name);
+				printf("%ld %c%s%s%s %s %s %10ld %s\n", inode, ch, own, grp, usr, 
+                            gpwd->pw_name, grgid->gr_name, (long)sb.st_size, name);
 			}
 		}
 	}
