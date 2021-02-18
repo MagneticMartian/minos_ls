@@ -1,6 +1,7 @@
 #include "include/apue.h"
 #include <dirent.h>
 #include <sys/stat.h>
+#include <string.h>
 #include <unistd.h>
 
 enum {
@@ -39,23 +40,11 @@ char* result(unsigned val)
 	return perms;
 }
 
-char* concat(char *first, char *second)
+char* concat(const char *first, const char *second)
 {
-	int i = 0, j = 0;
-	char *concatination;
-
-	while(first[i] != '\0'){
-		concatination[i] = first[i];
-		++i;
-	}
-
-	while(second[j] != '\0'){
-		concatination[i] = second[j];
-		++i;
-		++j;
-	}
-	concatination[i] ='\0';
-
+	char *concatination = malloc(strlen(first) + strlen(second) + 1);
+	strcpy(concatination, first);
+	strcat(concatination, second);
 	return concatination;
 }
 
