@@ -84,13 +84,11 @@ void list(DIR *dp, char* pwd)
                 case DT_CHR:
                     ch = 'c'; break;
                 case DT_DIR:
-                    ch = 'd'; 
-                    num_dir += 1; break;
+                    ch = 'd'; break;
                 case DT_BLK:
                     ch = 'b'; break;
                 case DT_REG:
-                    ch = '-'; 
-                    num_reg += 1; break;
+                    ch = '-'; break;
                 case DT_LNK:
                     ch = 'l'; break;
                 case DT_SOK:
